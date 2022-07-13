@@ -45,25 +45,18 @@ namespace ManterCursos.API.Data.Migrations
                     DataInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataTermino = table.Column<DateTime>(type: "datetime2", nullable: false),
                     QtdAlunosTurma = table.Column<int>(type: "int", nullable: true),
-                    CatgeoriaCursoIdCategoriaCursoId = table.Column<int>(type: "int", nullable: true),
-                    CatgeoriaCursoCategoriaCursoId = table.Column<int>(type: "int", nullable: true),
+                    CategoriaCursoId = table.Column<int>(type: "int", nullable: false),
                     status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cursos", x => x.CursoId);
                     table.ForeignKey(
-                        name: "FK_Cursos_CategoriasCursos_CatgeoriaCursoCategoriaCursoId",
-                        column: x => x.CatgeoriaCursoCategoriaCursoId,
+                        name: "FK_Cursos_CategoriasCursos_CategoriaCursoId",
+                        column: x => x.CategoriaCursoId,
                         principalTable: "CategoriasCursos",
                         principalColumn: "CategoriaCursoId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Cursos_CategoriasCursos_CatgeoriaCursoIdCategoriaCursoId",
-                        column: x => x.CatgeoriaCursoIdCategoriaCursoId,
-                        principalTable: "CategoriasCursos",
-                        principalColumn: "CategoriaCursoId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,14 +88,9 @@ namespace ManterCursos.API.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cursos_CatgeoriaCursoCategoriaCursoId",
+                name: "IX_Cursos_CategoriaCursoId",
                 table: "Cursos",
-                column: "CatgeoriaCursoCategoriaCursoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cursos_CatgeoriaCursoIdCategoriaCursoId",
-                table: "Cursos",
-                column: "CatgeoriaCursoIdCategoriaCursoId");
+                column: "CategoriaCursoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Logs_CursoId",

@@ -41,10 +41,7 @@ namespace ManterCursos.API.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CatgeoriaCursoCategoriaCursoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CatgeoriaCursoIdCategoriaCursoId")
+                    b.Property<int>("CategoriaCursoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataInicio")
@@ -64,9 +61,7 @@ namespace ManterCursos.API.Data.Migrations
 
                     b.HasKey("CursoId");
 
-                    b.HasIndex("CatgeoriaCursoCategoriaCursoId");
-
-                    b.HasIndex("CatgeoriaCursoIdCategoriaCursoId");
+                    b.HasIndex("CategoriaCursoId");
 
                     b.ToTable("Cursos");
                 });
@@ -122,17 +117,13 @@ namespace ManterCursos.API.Data.Migrations
 
             modelBuilder.Entity("ManterCursos.API.Models.Curso", b =>
                 {
-                    b.HasOne("ManterCursos.API.Models.CategoriaCurso", "CatgeoriaCurso")
+                    b.HasOne("ManterCursos.API.Models.CategoriaCurso", "CategoriaCurso")
                         .WithMany()
-                        .HasForeignKey("CatgeoriaCursoCategoriaCursoId");
+                        .HasForeignKey("CategoriaCursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("ManterCursos.API.Models.CategoriaCurso", "CatgeoriaCursoId")
-                        .WithMany()
-                        .HasForeignKey("CatgeoriaCursoIdCategoriaCursoId");
-
-                    b.Navigation("CatgeoriaCurso");
-
-                    b.Navigation("CatgeoriaCursoId");
+                    b.Navigation("CategoriaCurso");
                 });
 
             modelBuilder.Entity("ManterCursos.API.Models.Log", b =>
