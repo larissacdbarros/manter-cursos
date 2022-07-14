@@ -1,0 +1,28 @@
+<mat-toolbar color="primary">
+  <span>Cast Cursos</span>
+  <button mat-icon-button (click)="opened=!opened">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <div class="spacer"></div>
+  <a mat-flat-button routerLink="" color="accent">Voltar</a>
+</mat-toolbar>
+
+
+<mat-sidenav-container>
+  <mat-sidenav [(opened)]="opened" mode="side">
+
+    <mat-list>
+      <mat-list-item>
+        <a routerLink="/cursos" style="text-decoration: none ;">Curso</a>
+      </mat-list-item>
+      <mat-list-item>
+        <a routerLink="/log" style="text-decoration: none ;">Log</a>
+      </mat-list-item>
+    </mat-list>
+
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
