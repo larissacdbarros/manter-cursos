@@ -9,16 +9,6 @@
 
   <br>
   <br>
-<!--
-  <form [formGroup]="formGroupPesquisa" (ngSubmit)="formGroupPesquisa.valid">
-    <mat-form-field>
-      <input matInput placeholder="Descrição" formControlName="descricao" autocomplete="off" />
-    </mat-form-field>
-
-    <button mat-raised-button color="primary">Pesquisar</button>
-    <button mat-raised-button color="secondary" (click)="limparPesquisa()">Limpar</button>
-
-  </form> -->
 
   <form [formGroup]="formGroupPesquisa" (ngSubmit)="formGroupPesquisa.valid">
 
@@ -37,10 +27,12 @@
       </div>
       <div class="col-md-3">
         <input type="date" class="form-control" placeholder="Data Início" formControlName="dataInicio">
+        <label for="validacaoDescricao" class="form-label">  Data de Início</label>
 
       </div>
       <div class="col-md-3">
         <input type="date" class="form-control" placeholder="Data" formControlName="dataTermino">
+        <label for="validacaoDescricao" class="form-label">  Data de Término</label>
       </div>
 
       <div class="col-auto">
@@ -49,8 +41,6 @@
       </div>
 
     </div>
-
-    <!-- <button mat-raised-button color="secondary" (click)="limparPesquisa()">Limpar</button> -->
 
   </form>
   <br>

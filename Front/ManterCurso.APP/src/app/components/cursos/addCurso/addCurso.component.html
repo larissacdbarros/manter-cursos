@@ -3,23 +3,26 @@
   <form [formGroup]="formulario" (ngSubmit)="adicionar()">
 
     <div class="row">
-
       <div class="col">
-        <input type="text" class="form-control" placeholder="Descrição" formControlName="descricao" >
+        <input type="text" class="form-control" placeholder="Descrição *" formControlName="descricao" >
       </div>
 
       <div class="col">
         <input type="text" class="form-control" placeholder="Quantidade de Alunos" formControlName="qtdAlunosTurma">
       </div>
+
+
     </div>
 
     <br>
 
     <div class="row">
       <div class="col">
+        <label for="validacaoDescricao" class="form-label">Data de Início *</label>
         <input type="date" class="form-control" placeholder="Data Início" formControlName="dataInicio">
       </div>
       <div class="col">
+        <label for="validacaoDescricao" class="form-label">Data de Término *</label>
         <input type="date" class="form-control" placeholder="Data" formControlName="dataTermino">
       </div>
     </div>
@@ -29,7 +32,7 @@
     <div class="row">
       <div class="col-md-6">
         <select class="form-select" aria-label="Default select example" formControlName="categoriaCursoId">
-          <option value="" selected>Categoria</option>
+          <option value="" selected>Categoria *</option>
           <option *ngFor="let categoriaCurso of categoriasCurso" value="{{categoriaCurso.categoriaCursoId}}">
             {{categoriaCurso.tipo}}</option>
         </select>
@@ -43,3 +46,4 @@
     </div>
   </form>
 </div>
+
