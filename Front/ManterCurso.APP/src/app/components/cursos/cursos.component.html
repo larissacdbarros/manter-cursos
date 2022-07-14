@@ -8,8 +8,9 @@
   <mat-toolbar color="primary"> Cursos </mat-toolbar>
 
   <br>
-
-  <!-- <form [formGroup]="formGroupPesquisa" (ngSubmit)="formGroupPesquisa.valid">
+  <br>
+<!--
+  <form [formGroup]="formGroupPesquisa" (ngSubmit)="formGroupPesquisa.valid">
     <mat-form-field>
       <input matInput placeholder="Descrição" formControlName="descricao" autocomplete="off" />
     </mat-form-field>
@@ -19,7 +20,42 @@
 
   </form> -->
 
-  
+  <form [formGroup]="formGroupPesquisa" (ngSubmit)="formGroupPesquisa.valid">
+
+    <div class="row">
+      <div class="col-md-3">
+        <div class="search-hero">
+          <form [formGroup]="formGroupPesquisa" (ngSubmit)="formGroupPesquisa.valid && listarCursos()" >
+            <input type="text"
+              name="search"
+              class="form-control"
+              formControlName="descricao"
+              placeholder="Pesquisar pela Descrição" />
+          </form>
+        </div>
+
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control" placeholder="Data Início" formControlName="dataInicio">
+
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control" placeholder="Data" formControlName="dataTermino">
+      </div>
+
+      <div class="col-auto">
+        <button mat-raised-button color="primary" (click)="pesquisar()">Pesquisar</button> |
+        <button mat-raised-button color="primary" (click)="limparPesquisa()">Limpar</button>
+      </div>
+
+    </div>
+
+    <!-- <button mat-raised-button color="secondary" (click)="limparPesquisa()">Limpar</button> -->
+
+  </form>
+  <br>
+
+
 
   <table mat-table [dataSource]="cursos" class="mat-elevation-z8">
 
@@ -74,6 +110,6 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
   </table>
 </mat-card>

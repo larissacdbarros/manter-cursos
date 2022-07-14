@@ -24,7 +24,7 @@ import { AddCursoComponent } from './components/cursos/addCurso/addCurso.compone
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
 import {MatInputModule} from  '@angular/material/input';
-
+import {Ng2SearchPipeModule} from 'ng2-search-filter';
 
 
 
@@ -56,7 +56,8 @@ import {MatInputModule} from  '@angular/material/input';
     ReactiveFormsModule,
     NgbModule,
     ToastrModule.forRoot(),
-    MatInputModule
+    MatInputModule,
+    Ng2SearchPipeModule
 
 
   ],

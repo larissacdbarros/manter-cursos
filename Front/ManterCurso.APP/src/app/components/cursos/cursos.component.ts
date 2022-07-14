@@ -20,9 +20,16 @@ export class CursosComponent implements OnInit {
   public cursos: Curso[];
   public cursoId: Number;
 
-  queryfield = new FormControl();
 
-  
+
+
+  formGroupPesquisa = this.formBuilder.group({
+    descricao: [null],
+    dataInicio: [null],
+    dataTermino: [null]
+  });
+
+
   displayedColumns = [
   'descricao',
    'dataInicio',
@@ -32,7 +39,6 @@ export class CursosComponent implements OnInit {
    'acoes'
   ];
 
-  formGroupPesquisa: FormGroup;
 
 
   constructor(private cursoService: CursoService,
@@ -44,6 +50,7 @@ export class CursosComponent implements OnInit {
    }
 
   ngOnInit(): void {
+
    this.listarCursos()
 
   }
@@ -54,14 +61,6 @@ export class CursosComponent implements OnInit {
       this.cursos = resultado;
     });
 
-    this.formGroupPesquisa = this.formBuilder.group({
-      descricao: [null],
-    });
-
-    const query = new Map();
-    if(this.formGroupPesquisa.value.descricao){
-      query.set("nome_like", this.formGroupPesquisa.value.descricao)
-    }
 
   }
 
@@ -107,6 +106,29 @@ export class CursosComponent implements OnInit {
 
   }
 
+  pesquisar(){
 
+    var descricao = this.formGroupPesquisa.controls.descricao.value;
 
+    if(descricao && descricao.trim() !== ''){
+      descricao = descricao.trim();
+    }
+
+    this.cursoService.getAllStatusValido(descricao).subscribe(resultado => {
+      this.cursos = resultado;
+    });
+
+    var dataInicio = this.formGroupPesquisa.controls.dataInicio.value;
+    var dataTermino = this.formGroupPesquisa.controls.dataTermino.value;
+
+    if((dataInicio && dataInicio.trim() !== '') || (dataTermino && dataTermino.trim() !== '') ){
+      dataInicio = dataInicio.trim();
+      dataTermino = dataTermino.trim();
+    }
+
+    this.cursoService.getAllStatusValido(descricao, dataInicio, dataTermino).subscribe(resultado => {
+      this.cursos = resultado;
+    });
+
+  }
 }

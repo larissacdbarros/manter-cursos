@@ -19,8 +19,14 @@ private readonly url = `${environment.baseUrl}/api/cursos`; //caminho do control
 
 constructor(private http: HttpClient) { }
 
-getAllStatusValido(): Observable<Curso[]>{
-  return this.http.get<Curso[]>(`${this.url}/statusValido`);
+getAllStatusValido(descricao?: string, dataInicio?: string, dataTermino?: string ): Observable<Curso[]>{
+
+  const params ={
+    descricao: descricao? descricao:'',
+    dataInicio: dataInicio? dataInicio: '',
+    dataTermino: dataTermino? dataTermino: ''
+  }
+  return this.http.get<Curso[]>(`${this.url}/statusValido`,{params});
 }
 
 getById(id: Number): Observable<Curso>{
