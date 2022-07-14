@@ -33,6 +33,9 @@ namespace ManterCursos.API
                 context => context.UseSqlServer(Configuration.GetConnectionString("Default"))
             );
             services.AddControllers();
+            services.AddCors();
+
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ManterCursos.API", Version = "v1" });
@@ -54,6 +57,12 @@ namespace ManterCursos.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(x=>x.AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+                .AllowAnyHeader());
+
 
             app.UseEndpoints(endpoints =>
             {

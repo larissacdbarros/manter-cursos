@@ -14,6 +14,7 @@ namespace ManterCursos.API.Controllers
     [Route("api/cursos")]
     public class CursosController: ControllerBase
     {
+        private string validacaoData;
         private readonly DataContext _context;
         public CursosController(DataContext context)
         {
@@ -29,11 +30,16 @@ namespace ManterCursos.API.Controllers
         }
 
         [HttpGet("statusValido")]
-        public async Task<ActionResult<IEnumerable<Curso>>> GetAllStatusValido()
+        public async Task<ActionResult<IEnumerable<Curso>>> GetAllStatusValido(string descricao, string dataInicio, string dataTermino)
         {
             return await _context.Cursos
             .Include(curso => curso.CategoriaCurso)
-            .Where(curso => curso.status == true)
+            .Where(curso => curso.status == true
+                    && ((descricao == null || descricao == "")
+                    || curso.Descricao.Contains(descricao) )
+                    && ((dataInicio == null || dataTermino == null) 
+                    || (curso.DataInicio >= Convert.ToDateTime(dataInicio) 
+                    && curso.DataTermino <= Convert.ToDateTime(dataTermino))))
             .ToListAsync();
         }
 
@@ -48,7 +54,7 @@ namespace ManterCursos.API.Controllers
 
             if (curso == null)
             {
-                return NotFound();
+                return NotFound("Curso não encontrado");
             }
             return curso;
         }
@@ -62,7 +68,7 @@ namespace ManterCursos.API.Controllers
             Curso curso = await _context.Cursos.FindAsync(id);
             
             if(curso == null){
-                return NotFound();
+                return NotFound("Curso não encontrado");
             }
 
             body.CursoId = id ;
@@ -81,7 +87,7 @@ namespace ManterCursos.API.Controllers
                         .FirstOrDefault();  
 
                 if(log == null){
-                    return NotFound();
+                    return NotFound("Log não encontrado");
                 } 
 
                 log.DataAtualizacao = DateTime.Now;
@@ -99,7 +105,7 @@ namespace ManterCursos.API.Controllers
                 return Ok(body);
 
             }else{
-                return  Problem(null, null, 422, "Data inválida!", null);
+                return  Problem(null, null, 422, validacaoData, null);
             }
 
         }
@@ -140,7 +146,7 @@ namespace ManterCursos.API.Controllers
                 return Ok(curso);
 
             }else{
-                return  Problem(null, null, 422, "Data inválida!", null); 
+                return  Problem(null, null, 422, validacaoData, null); 
             }
         }
 
@@ -156,7 +162,7 @@ namespace ManterCursos.API.Controllers
 
             Curso result = await _context.Cursos.FindAsync(id);
             if (result == null ){
-                return NotFound (); 
+                return NotFound ("Curso não encontrado"); 
             }
             _context.Remove(result);
             await _context.SaveChangesAsync();
@@ -171,11 +177,11 @@ namespace ManterCursos.API.Controllers
             Curso curso = await _context.Cursos.FindAsync(id);
             
             if(curso == null){
-                return NotFound();
+                return NotFound("Curso não encontrado");
             }
 
             // não permite a deleção de cursos que já estão ocorrendo e que já acabaram
-            if (curso.DataInicio > DateTime.Now.Date)
+            if (curso.DataTermino > DateTime.Now.Date)
             {
                 curso.status = false;
          
@@ -189,7 +195,7 @@ namespace ManterCursos.API.Controllers
                         .FirstOrDefault();  
 
                 if(log == null){
-                    return NotFound();
+                    return NotFound("Log não encontrado");
                 } 
 
                 log.DataAtualizacao = DateTime.Now;
@@ -207,7 +213,7 @@ namespace ManterCursos.API.Controllers
                 return Ok(curso);
                 
             }else{
-                return  Problem(null, null, 422, "Não é possível deletar este curso!", null); 
+                return  Problem(null, null, 422, "Não é possível deletar este curso, pois este já foi encerrado!", null); 
             }
 
             
@@ -216,6 +222,7 @@ namespace ManterCursos.API.Controllers
         private bool VerificaData(Curso curso){
             //buscar se o curso que está sendo agendado é para o mesmo período
             var result =  _context.Cursos
+                    .Where(curso => curso.status == true)
                     .Where(c => curso.CursoId != c.CursoId 
                             && ((curso.DataInicio >= c.DataInicio && curso.DataTermino <= c.DataTermino) 
                             || (curso.DataInicio <= c.DataTermino && curso.DataTermino >= c.DataTermino)
@@ -223,14 +230,23 @@ namespace ManterCursos.API.Controllers
                     .FirstOrDefault();
 
             if(result != null){
+                validacaoData = "Existe(m) curso(s) planejados(s) dentro do período informado.";
                 return false;
             }
 
             DateTime dataAtual = DateTime.Now.Date;
 
+            if(curso.DataInicio.Date < dataAtual){
+                validacaoData = "A data de início do curso precisa ser maior que a data atual";
+            }
+
+            if(curso.DataTermino < curso.DataInicio){
+                validacaoData = "A data de término do curso precisa ser maior que a data de início";
+            }
+                
             // validação para data de início menor que a data atual
-            // validação para data de término maior que a data de início 
-            return curso.DataInicio.Date > dataAtual && curso.DataTermino.Date > curso.DataInicio.Date;
+            // validação para data de término maior ou igual a data de início 
+            return curso.DataInicio.Date > dataAtual && curso.DataTermino >= curso.DataInicio;
         }
     }
 }
