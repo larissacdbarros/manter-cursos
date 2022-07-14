@@ -15,6 +15,7 @@ namespace ManterCursos.API.Controllers
     public class CursosController: ControllerBase
     {
         private string validacaoData;
+        private string validacaoNome;
         private readonly DataContext _context;
         public CursosController(DataContext context)
         {
@@ -120,11 +121,14 @@ namespace ManterCursos.API.Controllers
             CategoriaCurso categoriaCurso = await _context.CategoriasCursos.FindAsync(curso.CategoriaCursoId);
             curso.CategoriaCurso = categoriaCurso;
 
-            //Inclusão de cursos no mesmo período não é permitida
-            // Não é permitida a inclsão de cursos com data de início menor que a data atual
-            bool isDataValida = VerificaData(curso);
+            if(!VerificaNomeExistente(curso)){   
 
-            if(isDataValida){
+                return  Problem(null, null, 422, validacaoNome, null);
+            
+            }else{
+
+
+                if(VerificaData(curso)){
                 await _context.Cursos.AddAsync(curso);
                 await _context.SaveChangesAsync();
 
@@ -148,6 +152,13 @@ namespace ManterCursos.API.Controllers
             }else{
                 return  Problem(null, null, 422, validacaoData, null); 
             }
+
+            }
+            
+            
+            //Inclusão de cursos no mesmo período não é permitida
+            // Não é permitida a inclsão de cursos com data de início menor que a data atual
+            
         }
 
         [HttpDelete("{id}")]
@@ -247,6 +258,22 @@ namespace ManterCursos.API.Controllers
             // validação para data de início menor que a data atual
             // validação para data de término maior ou igual a data de início 
             return curso.DataInicio.Date > dataAtual && curso.DataTermino >= curso.DataInicio;
+        }
+
+        private bool VerificaNomeExistente(Curso curso){
+            //buscar se o curso que está sendo agendado é para o mesmo período
+            var result =  _context.Cursos
+                    .Where(curso => curso.status == true)
+                    .Where(c => (curso.CursoId != c.CursoId)  
+                            && (curso.Descricao == c.Descricao))
+                    .FirstOrDefault();
+
+            if(result != null){
+                validacaoNome = "Já há um curso cadastrado com esse nome.";
+                return false;
+            }
+
+            return true;
         }
     }
 }
